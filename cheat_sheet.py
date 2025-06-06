@@ -536,7 +536,7 @@ class CheatSheetBuilder:
         # Handle dates with no Av HaRachamim
         if res["hm"] == "Nisan":
             special["omit av harchamim"] = True
-        if res["hm"] == "Sivan" and res["hd"] <= 12:
+        if res["hm"] == "Sivan" and res["hd"] >= 6 and res["hd"] <= 12:
             special["omit av harchamim"] = True
         if res["hm"] == "Tishrei" and res["hd"] >= 9:
             special["omit av harchamim"] = True
