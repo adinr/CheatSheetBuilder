@@ -6,6 +6,7 @@ import sys
 import csv
 import json
 import argparse
+import logging
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
@@ -103,6 +104,7 @@ class CheatSheetBuilder:
         credentials,
         source_documents,
         shamashim,
+        logger,
     ):
         with open(source_documents) as source_documents_fileobj:
             for doc_id_field_name, doc_id in json.load(source_documents_fileobj).items():
@@ -110,6 +112,8 @@ class CheatSheetBuilder:
 
         with open(shamashim) as shamashim_fileobj:
             self.shamashim = json.load(shamashim_fileobj)
+
+        self.logger = logger
 
         SCOPES = [
             "https://www.googleapis.com/auth/documents",
@@ -178,7 +182,7 @@ class CheatSheetBuilder:
         document = self.get_document(document_id)
         header = list(document["headers"].values())[0]
         found_fields.update(self.find_fields_in_content(header["content"][0]))
-        print("missing:", [field for field in self.FIELDS if field not in found_fields])
+        self.logger.debug(f"missing: {[field for field in self.FIELDS if field not in found_fields]}")
         assert all([field in found_fields for field in self.FIELDS])
 
         res = self.docs_service.documents().batchUpdate(
@@ -299,7 +303,7 @@ class CheatSheetBuilder:
             for aliyah, source in item["leyning"].items():
                 if aliyah not in ("1", "4", "7", "maftir", "haftarah"):
                     continue
-                print(aliyah, source)
+                self.logger.debug((aliyah, source))
                 book, start = source.split("-")[0].rsplit(None, 1)
                 start_chapter, start_verse = start.split(":")
                 if aliyah == "1":
@@ -774,7 +778,7 @@ class CheatSheetBuilder:
     def print_document(self, document_id):
         document = self.get_document(document_id)
         for content in document["body"]["content"][1:]:
-            print(content["paragraph"]["elements"])
+            self.logger.debug(content["paragraph"]["elements"])
 
 def main():
     parser = argparse.ArgumentParser(
@@ -785,12 +789,17 @@ def main():
     parser.add_argument("-i", "--source_docs", help="specify the location of the source documents file")
     parser.add_argument("-s", "--shamashim", help="specify the location of the shamashim file")
     parser.add_argument("-d", "--date", help="specify the date (YYYY-MM-DD) for which to generate the cheat sheet")
+    parser.add_argument("-v", "--verbose", action="store_true", help="print debug logs")
     args = parser.parse_args()
 
+    logging.basicConfig(stream=sys.stderr)
+    logger = logging.getLogger("CheatSheetBuilder")
+    logger.setLevel(logging.DEBUG if args.verbose else logging.INFO)
     builder = CheatSheetBuilder(
         args.credentials or "cheat_sheet_credentials.json",
         args.source_docs or "source_documents.json",
         args.shamashim or "shamashim.json",
+        logger,
     )
     date = builder.get_date()
     if args.date:
@@ -798,8 +807,8 @@ def main():
     special = builder.get_special_shabbat(date)
     fields = builder.collect_fields(date, special)
     document_id = builder.copy_template(date, fields["parasha_title"], special)
-    print(f"https://docs.google.com/document/d/{document_id}/edit")
-    print(special)
+    logger.info(f"Generated document: https://docs.google.com/document/d/{document_id}/edit")
+    logger.debug(special)
     builder.delete_section(document_id, "OMER", not special["omer"])
     builder.delete_section(document_id, "PSALM_27", not special["psalm 27"])
     builder.delete_section(document_id, "ULCHAPARAT_PASHA_NOTE", not special["ulchaparat pasha"])
