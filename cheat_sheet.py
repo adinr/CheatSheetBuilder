@@ -15,18 +15,18 @@ from google.oauth2.credentials import Credentials
 class CheatSheetBuilder:
     FIELDS = [
         "date",
-        "parasha_title", 
-        "s1", 
-        "s2", 
-        "host", 
-        "kiddush_volunteer", 
+        "parasha_title",
+        "s1",
+        "s2",
+        "host",
+        "kiddush_volunteer",
         "greeter",
-        "shacharit", 
-        "maftir", 
-        "torah", 
-        "parasha_name", 
-        "parasha_book", 
-        "parasha_chapter", 
+        "shacharit",
+        "maftir",
+        "torah",
+        "parasha_name",
+        "parasha_book",
+        "parasha_chapter",
         "parasha_verse",
         "parasha_etz_hayim",
         "parasha_hertz",
@@ -64,10 +64,10 @@ class CheatSheetBuilder:
     ORDINALS = {1: "first", 2: "second", 3: "third", 4: "fourth", 5: "fifth", 6: "sixth", 7: "seventh", 8: "eighth"}
 
     BOOKS = {
-        "Genesis": "B’reshit", 
-        "Exodus": "Sh’mot", 
-        "Leviticus": "Vayikra", 
-        "Numbers": "B’midbar", 
+        "Genesis": "B’reshit",
+        "Exodus": "Sh’mot",
+        "Leviticus": "Vayikra",
+        "Numbers": "B’midbar",
         "Deuteronomy": "D’varim",
         "Joshua": "Yehoshua (Joshua)",
         "Judges": "Shof’tim (Judges)",
@@ -149,7 +149,7 @@ class CheatSheetBuilder:
         if special["four parshiyot"] == "Shabbat HaChodesh":
             document_id = self.HACHODESH_ROSH_CHODESH_TEMPLATE_DOCUMENT_ID if special["rosh chodesh"] else self.HACHODESH_TEMPLATE_DOCUMENT_ID
         drive_response = self.drive_service.files().copy(fileId=document_id, body={"name": title}).execute()
-        document_copy_id = drive_response.get("id") 
+        document_copy_id = drive_response.get("id")
         return document_copy_id
 
     def find_fields_in_content(self, content):
@@ -479,7 +479,7 @@ class CheatSheetBuilder:
         # Collect maftir page numbers first so that when maftir conincides with the beginning of a parashah
         # (i.e. Shekalim and Ki Tissa, Parah and Chukat) the maftir page numbers don't override the parashah page numbers
         fields.update(self.collect_page_numbers(
-            fields["maftir_book_english"], fields["maftir_chapter"], fields["maftir_verse"], 
+            fields["maftir_book_english"], fields["maftir_chapter"], fields["maftir_verse"],
         ))
         fields.update(self.collect_page_numbers(
             fields["parasha_book_english"], fields["parasha_chapter"], fields["parasha_verse"],
@@ -568,7 +568,7 @@ class CheatSheetBuilder:
             if month == "Adar I":
                 month = "Adar Rishon"
             if month == "Adar II":
-                month = "Adar Sheni"                
+                month = "Adar Sheni"
             special["mevarchim"] = (month, rosh_chodesh_days)
             self.FIELDS += ["birkat_hachodesh_month", "birkat_hachodesh_day"]
             special["omit av harchamim"] = month not in ("Iyyar", "Sivan")
@@ -676,7 +676,7 @@ class CheatSheetBuilder:
         now = datetime.date.today()
         days_until_next_shabbat = ((4 - now.weekday()) % 7) + 1
         date = now + datetime.timedelta(days=days_until_next_shabbat)
-        return date        
+        return date
 
     def fill_in_fields(self, document_id, fields):
         self.docs_service.documents().batchUpdate(
@@ -697,8 +697,8 @@ class CheatSheetBuilder:
                     "requests": [
                         {
                             "updateTextStyle": {
-                                "range": {"startIndex": start_index, "endIndex": end_index}, 
-                                "textStyle": {"backgroundColor": {"color": {"rgbColor": {"red": 1}}}}, 
+                                "range": {"startIndex": start_index, "endIndex": end_index},
+                                "textStyle": {"backgroundColor": {"color": {"rgbColor": {"red": 1}}}},
                                 "fields": "backgroundColor"
                             }
                         }
@@ -743,7 +743,7 @@ class CheatSheetBuilder:
                     },
                 },
             ]
-        self.docs_service.documents().batchUpdate(documentId=document_id, body={"requests": requests}).execute()        
+        self.docs_service.documents().batchUpdate(documentId=document_id, body={"requests": requests}).execute()
 
     def delete_section(self, document_id, marker, delete):
         document = self.get_document(document_id)
@@ -756,7 +756,7 @@ class CheatSheetBuilder:
                     continue
                 if f"<BEGIN_{marker}>" in element["textRun"]["content"]:
                     begin_start_index, begin_end_index = element["startIndex"], element["endIndex"]
-                if f"<END_{marker}>" in element["textRun"]["content"]:                    
+                if f"<END_{marker}>" in element["textRun"]["content"]:
                     end_start_index, end_end_index = element["startIndex"], element["endIndex"]
         if not all([begin_start_index, begin_end_index, end_start_index, end_end_index]):
             return
@@ -767,7 +767,7 @@ class CheatSheetBuilder:
             # delete just the markers
             ranges_to_delete = [(end_start_index, end_end_index), (begin_start_index, begin_end_index)]
         self.docs_service.documents().batchUpdate(
-            documentId=document_id, 
+            documentId=document_id,
             body={
                 "requests": [
                     {"deleteContentRange": {"range": {"startIndex": start_index, "endIndex": end_index}}}
