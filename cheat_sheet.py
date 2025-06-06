@@ -126,7 +126,7 @@ class CheatSheetBuilder:
 
         self.docs_service = build("docs", "v1", credentials=creds)
         self.drive_service = build("drive", "v3", credentials=creds)
-        self.sheets_service = build("sheets", 'v4', credentials=creds)
+        self.sheets_service = build("sheets", "v4", credentials=creds)
 
     def get_document(self, document_id):
         return self.docs_service.documents().get(documentId=document_id).execute()
@@ -183,7 +183,7 @@ class CheatSheetBuilder:
         document = self.get_document(document_id)
         header = list(document["headers"].values())[0]
         found_fields.update(self.find_fields_in_content(header["content"][0]))
-        print([field for field in self.FIELDS if field not in found_fields])
+        print("missing:", [field for field in self.FIELDS if field not in found_fields])
         assert all([field in found_fields for field in self.FIELDS])
 
         res = self.docs_service.documents().batchUpdate(
