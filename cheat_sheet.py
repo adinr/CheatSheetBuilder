@@ -19,8 +19,6 @@ class CheatSheetBuilder:
         "s1",
         "s2",
         "host",
-        "kiddush_volunteer",
-        "greeter",
         "shacharit",
         "maftir",
         "torah",
@@ -46,7 +44,6 @@ class CheatSheetBuilder:
         "dvar_torah",
         "next_meeting_date",
         "next_meeting_time",
-        "thank_you_host",
         "thank_you_shamash",
         "thank_you_shacharit",
         "thank_you_torah",
@@ -57,8 +54,6 @@ class CheatSheetBuilder:
         "thank_you_kiddush_volunteer",
         "kiddush_sponsor",
         "scotch_sponsor",
-        "mi_shebeyrach_list",
-        "family_programming",
     ]
 
     ORDINALS = {1: "first", 2: "second", 3: "third", 4: "fourth", 5: "fifth", 6: "sixth", 7: "seventh", 8: "eighth"}
