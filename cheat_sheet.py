@@ -530,17 +530,19 @@ class CheatSheetBuilder:
         }
         r = requests.get(f"https://www.hebcal.com/converter?cfg=json&gy={date.year}&gm={date.month}&gd={date.day}&g2h=1")
         res = r.json()
-        if res["hm"] == "Elul" or (res["hm"] == "Tishrei" and res["hd"] <= 21):  # Elul through Hoshana Rabba
+        month, day = res["hm"], res["hd"]
+
+        if month == "Elul" or (month == "Tishrei" and day <= 21):  # Elul through Hoshana Rabba
             special["psalm 27"] = True
 
         # Handle dates with no Av HaRachamim
-        if res["hm"] == "Nisan":
+        if month == "Nisan":
             special["omit av harchamim"] = True
-        if res["hm"] == "Sivan" and res["hd"] >= 6 and res["hd"] <= 12:
+        if month == "Sivan" and day >= 6 and day <= 12:
             special["omit av harchamim"] = True
-        if res["hm"] == "Tishrei" and res["hd"] >= 9:
+        if month == "Tishrei" and day >= 9:
             special["omit av harchamim"] = True
-        if res["hm"] in ("Adar", "Adar I", "Adar II") and res["hd"] in (14, 15):
+        if month in ("Adar", "Adar I", "Adar II") and day in (14, 15):
             special["omit av harchamim"] = True
 
         # Handle Shabbat Mevarchim
@@ -587,7 +589,7 @@ class CheatSheetBuilder:
             # Handle Rosh Chodesh
             if "Rosh Chodesh" in event:
                 special["rosh chodesh"] = True
-                if res["hy"] % 19 in [0, 3, 6, 8, 11, 14, 17] and res["hm"] in ["Cheshvan", "Kislev", "Tevet", "Sh'vat", "Adar I", "Adar II"]:
+                if res["hy"] % 19 in [0, 3, 6, 8, 11, 14, 17] and month in ["Cheshvan", "Kislev", "Tevet", "Sh'vat", "Adar I", "Adar II"]:
                     special["ulchaparat pasha"] = True
                 special["omit av harchamim"] = True
 
@@ -612,9 +614,9 @@ class CheatSheetBuilder:
                 special["notes"].append("Shabbat HaGadol (different haftarah, no Av HaRachamim)")
 
             # Handle rebuke haftarot
-            if res["hm"] == "Tamuz" and res["hd"] >= 19 and res["hd"] <= 24:
+            if month == "Tamuz" and day >= 19 and day <= 24:
                 special["rebuke"] = 1
-            if (res["hm"] == "Tamuz" and res["hd"] >= 26) or (res["hm"] == "Av" and res["hd"] <= 2):
+            if (month == "Tamuz" and day >= 26) or (month == "Av" and day <= 2):
                 special["rebuke"] = 2
             if event == "Shabbat Chazon":
                 special["chazon"] = True
@@ -631,14 +633,14 @@ class CheatSheetBuilder:
                 special["consolation"] = 4
             if "Ki Teitzei" in event:
                 special["consolation"] = 5
-                if res["hm"] == "Av" and res["hd"] == 15:
+                if month == "Av" and day == 15:
                     special["consolation 3 appended to 5"] = True
             if "Ki Tavo" in event:
                 special["consolation"] = 6
                 special["notes"].append("Aliyah 6: Tokhekhah. Aliyah to Ba’al Koreh")
             if "Nitzavim" in event:
                 special["consolation"] = 7
-            if event == "Shabbat Shuva" and res["hm"] == "Tishrei" and res["hd"] >= 1 and res["hd"] <= 10:
+            if event == "Shabbat Shuva" and month == "Tishrei" and day >= 1 and day <= 10:
                 special["shuva"] = event
                 self.FIELDS.append("haftarah_note")
 
