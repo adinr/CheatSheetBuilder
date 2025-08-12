@@ -285,10 +285,10 @@ class CheatSheetBuilder:
         if not rows:
             self.logger.warning(f"could not find date {date.strftime('%-m/%-d')} in kiddush spreadsheet")
             return fields
-        row = rows[0][:5]
-        row += ["" for _ in range(5 - len(row))]  # pad row to contain 5 cells
-        fields["kiddush_volunteer"] = row[4]
-        fields["kiddush_sponsor"] = f"{row[1]}, {row[3]}"
+        row = rows[0][:6]
+        row += ["" for _ in range(6 - len(row))]  # pad row to contain 6 cells
+        fields["kiddush_volunteer"] = row[5]
+        fields["kiddush_sponsor"] = f"{row[2]}, {row[4]}"
         response = self.sheets_service.spreadsheets().values().get(spreadsheetId=self.SCOTCH_SHEET_ID, range=f"2015+!A2:E55").execute()
         rows = [row for row in response["values"] if row and row[0] == date.strftime("%-m/%-d/%Y")]
         if not rows:
