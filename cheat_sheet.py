@@ -536,13 +536,12 @@ class CheatSheetBuilder:
             special["psalm 27"] = True
 
         # Handle dates with no Av HaRachamim
-        if month == "Nisan":
-            special["omit av harchamim"] = True
-        if month == "Sivan" and day >= 6 and day <= 12:
-            special["omit av harchamim"] = True
-        if month == "Tishrei" and day >= 9:
-            special["omit av harchamim"] = True
-        if month in ("Adar", "Adar I", "Adar II") and day in (14, 15):
+        if any((
+            month == "Nisan",
+            month == "Sivan" and day >= 6 and day <= 12,
+            month == "Tishrei" and day >= 9,
+            month in ("Adar", "Adar I", "Adar II") and day in (14, 15),
+        )):
             special["omit av harchamim"] = True
 
         # Handle Shabbat Mevarchim
