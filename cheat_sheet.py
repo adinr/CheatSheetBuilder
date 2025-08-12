@@ -245,7 +245,7 @@ class CheatSheetBuilder:
         fields["s2"] = row[10]
         fields["host"] = row[11]
         fields["shacharit"] = row[3]
-        fields["maftir"] = row[5]
+        fields["maftir"] = row[5].split("\n")[-1]
         fields["torah_multiline"] = row[4]
         fields["torah"] = "; ".join(fields["torah_multiline"].split("\n"))
         fields["parasha_name"] = fields["parasha_title"]
