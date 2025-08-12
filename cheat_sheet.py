@@ -279,7 +279,8 @@ class CheatSheetBuilder:
 
     def collect_fields_from_kiddush_spreadsheet(self, date):
         fields = {}
-        response = self.sheets_service.spreadsheets().values().get(spreadsheetId=self.KIDDUSH_SHEET_ID, range="Upcoming!A2:F55").execute()
+        tab = "Upcoming" if date > datetime.datetime.today() else "Past"
+        response = self.sheets_service.spreadsheets().values().get(spreadsheetId=self.KIDDUSH_SHEET_ID, range=f"{tab}!A2:F55").execute()
         rows = [row for row in response["values"] if row and date.strftime("%-m/%-d") in row[0]]
         if not rows:
             self.logger.warning(f"could not find date {date.strftime('%-m/%-d')} in kiddush spreadsheet")
