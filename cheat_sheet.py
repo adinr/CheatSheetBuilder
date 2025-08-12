@@ -538,8 +538,11 @@ class CheatSheetBuilder:
         # Handle dates with no Av HaRachamim
         if any((
             month == "Nisan",
+            month == "Iyyar" and day in (14, 18),
             month == "Sivan" and day >= 6 and day <= 12,
+            month == "Av" and day == 15,
             month == "Tishrei" and day >= 9,
+            month == "Sh'vat" and day == 15,
             month in ("Adar", "Adar I", "Adar II") and day in (14, 15),
         )):
             special["omit av harchamim"] = True
@@ -574,10 +577,6 @@ class CheatSheetBuilder:
             special["omit av harchamim"] = month not in ("Iyyar", "Sivan")
 
         for event in res["events"]:
-            # Handle additional days with no Av HaRachamim
-            if event in ("Pesach Sheni", "Lag BaOmer", "Tu B'Av", "Tu BiShvat"):
-                special["omit av harchamim"] = True
-
             # Handle Hanukkah
             m = re.search("Chanukah Day (\\d+)", event, re.IGNORECASE)
             if m:
