@@ -278,13 +278,17 @@ class CheatSheetBuilder:
         return fields
 
     def collect_fields_from_kiddush_spreadsheet(self, date):
+        def get_kiddush_rows(tab):
+            response = self.sheets_service.spreadsheets().values().get(spreadsheetId=self.KIDDUSH_SHEET_ID, range=f"{tab}!A2:F55").execute()
+            return [row for row in response["values"] if row and date.strftime("%-m/%-d") in row[0]]
         fields = {}
-        tab = "Upcoming" if date > datetime.datetime.today() else "Past"
-        response = self.sheets_service.spreadsheets().values().get(spreadsheetId=self.KIDDUSH_SHEET_ID, range=f"{tab}!A2:F55").execute()
-        rows = [row for row in response["values"] if row and date.strftime("%-m/%-d") in row[0]]
+        rows = get_kiddush_rows("Upcoming")
         if not rows:
-            self.logger.warning(f"could not find date {date.strftime('%-m/%-d')} in kiddush spreadsheet")
-            return fields
+            self.logger.warning(f"could not find date {date.strftime('%-m/%-d')} in kiddush spreadsheet, trying tab of past kiddushes")
+            rows = get_kiddush_rows("Past")
+            if not rows:
+                self.logger.warning(f"could not find date {date.strftime('%-m/%-d')} in kiddush spreadsheet")
+                return fields
         row = rows[0][:6]
         row += ["" for _ in range(6 - len(row))]  # pad row to contain 6 cells
         fields["kiddush_volunteer"] = row[5]
