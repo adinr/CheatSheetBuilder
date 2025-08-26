@@ -497,7 +497,7 @@ class CheatSheetBuilder:
         specific_parasha = None
         if fields["parasha_title"] == "Noach" or special["consolation 3 appended to 5"]:
             specific_parasha = "Noach"  # make sure we don't use Ki Teitze which starts at the same place as Noach
-        if fields["parasha_title"] == "Beha'alotcha":
+        if fields["parasha_title"] in ("Beha'alotcha", "Beha’alotcha"):
             specific_parasha = "Beha'alotcha"  # make sure we don't use Hanukkah which starts at the same place
         fields.update(self.collect_page_numbers(
             fields["haftarah_book_english"], fields["haftarah_chapter"], fields["haftarah_verse"], specific_parasha,
@@ -553,7 +553,7 @@ class CheatSheetBuilder:
             month == "Sivan" and day >= 6 and day <= 12,
             month == "Av" and day == 15,
             month == "Tishrei" and day >= 9,
-            month == "Sh'vat" and day == 15,
+            month in ("Sh'vat", "Sh’vat") and day == 15,
             month in ("Adar", "Adar I", "Adar II") and day in (14, 15),
         )):
             special["omit av harchamim"] = True
@@ -598,7 +598,7 @@ class CheatSheetBuilder:
             # Handle Rosh Chodesh
             if "Rosh Chodesh" in event:
                 special["rosh chodesh"] = True
-                if res["hy"] % 19 in [0, 3, 6, 8, 11, 14, 17] and month in ["Cheshvan", "Kislev", "Tevet", "Sh'vat", "Adar I", "Adar II"]:
+                if res["hy"] % 19 in [0, 3, 6, 8, 11, 14, 17] and month in ["Cheshvan", "Kislev", "Tevet", "Sh'vat", "Sh’vat", "Adar I", "Adar II"]:
                     special["ulchaparat pasha"] = True
                 special["omit av harchamim"] = True
 
@@ -636,7 +636,7 @@ class CheatSheetBuilder:
                 special["nachamu"] = True
             if "Eikev" in event:
                 special["consolation"] = 2
-            if "Re'eh" in event:
+            if "Re'eh" in event or "Re’eh" in event:
                 special["consolation"] = 3
             if "Shoftim" in event:
                 special["consolation"] = 4
