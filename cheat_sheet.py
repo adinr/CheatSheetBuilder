@@ -393,6 +393,7 @@ class CheatSheetBuilder:
                 )
 
         if special["shuva"]:
+            self.logger.debug(f"shabbat shuva {special["shuva"]}")
             fields["haftarah_parasha"] = "The Haftarah for Shabbat Shuva"
             if special["shuva"] == "Parashat Vayeilech":
                 fields["haftarah_book_english"] = "Micah"
@@ -647,7 +648,9 @@ class CheatSheetBuilder:
             if "Nitzavim" in event:
                 special["consolation"] = 7
             if event == "Shabbat Shuva" and month == "Tishrei" and day >= 1 and day <= 10:
-                special["shuva"] = event
+                parasha = [e for e in res["events"] if "Parashat" in e]
+                parasha = parasha[0] if parasha else "Unknown"
+                special["shuva"] = parasha
                 self.FIELDS.append("haftarah_note")
 
             # Handle Aseret HaDibrot
