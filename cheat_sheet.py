@@ -262,7 +262,6 @@ class CheatSheetBuilder:
             fields["next_meeting_time"] = "9:30"
         else:
             fields["next_meeting_time"] = "9:00"
-        fields["thank_you_host"] = self.get_shamash_full_name_and_email(fields["host"])[0]
         shamashim = []
         if fields["host"] not in fields["s1"]:
             shamashim.append(self.get_shamash_full_name_and_email(fields["s1"])[0])
