@@ -35,6 +35,7 @@ class CheatSheetBuilder:
         "seventh_aliyah_chapter",
         "seventh_aliyah_verse",
         "maftir_aliyah",
+        "maftir_hebrew_name",
         "haftarah_parasha",
         "haftarah_book",
         "haftarah_chapter",
@@ -251,6 +252,7 @@ class CheatSheetBuilder:
         fields["parasha_name"] = fields["parasha_title"]
         fields["parasha_sixth_and_seventh"] = fields["parasha_title"]  # for 3-torah shabbatot
         fields["maftir_aliyah"] = fields["maftir"]
+        fields["maftir_hebrew_name"] = self.find_maftir_hebrew_name(fields["maftir"])
         fields["haftarah_parasha"] = f"The haftarah for Parashat {fields['parasha_title']}"
         fields["mi_shebeyrach_s1"] = fields["s1"]
         fields["musaf"] = row[6]
@@ -440,6 +442,11 @@ class CheatSheetBuilder:
                 fields["haftarah_etz_hayim"] = row[6]
                 fields["haftarah_hertz"] = row[7]
         return fields
+
+    def find_maftir_hebrew_name(self, english_name):
+        response = self.sheets_service.spreadsheets().values().get(spreadsheetId=self.PAGE_NUMBERS_SHEET_ID, range="Hebrew Names!A1:B500").execute()
+        hebrew_names = [row_hebrew_name for row_english_name, row_hebrew_name in response["values"] if row_english_name == english_name]
+        return hebrew_names[0] if hebrew_names else "Y/Ta’amod [Hebrew Name]"
 
     def collect_birkat_hachodesh_fields(self, special):
         fields = {}
