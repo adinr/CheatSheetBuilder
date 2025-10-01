@@ -441,10 +441,6 @@ class CheatSheetBuilder:
                 fields["haftarah_hertz"] = row[7]
         return fields
 
-    def collect_mi_shebeyrach_list(self):
-        response = self.sheets_service.spreadsheets().values().get(spreadsheetId=self.PAGE_NUMBERS_SHEET_ID, range="Mi Shebeyrach!A1:A50").execute()
-        return {"mi_shebeyrach_list": "\n".join([row[0] for row in response["values"] if row])}
-
     def collect_birkat_hachodesh_fields(self, special):
         fields = {}
         if not special["mevarchim"]:
@@ -497,7 +493,6 @@ class CheatSheetBuilder:
         fields.update(self.collect_page_numbers(
             fields["haftarah_book_english"], fields["haftarah_chapter"], fields["haftarah_verse"], specific_parasha,
         ))
-        fields.update(self.collect_mi_shebeyrach_list())
         return fields
 
     def get_special_shabbat(self, date):
