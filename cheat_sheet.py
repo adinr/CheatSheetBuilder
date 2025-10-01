@@ -473,10 +473,6 @@ class CheatSheetBuilder:
         date_string = date.strftime("%-m/%-d/%Y")
         fields = {}
         fields["date"] = date_string
-        fields["family_programming"] = (
-            "Tot shabbat will be starting at 10:30 in the classroom on the left, followed by Parent & Me at 11:00, "
-            "and junior minyan will be starting at 11:00 in the classroom on the right."
-        )
         fields.update(self.collect_fields_from_calendar(date))
         fields.update(self.collect_fields_from_kiddush_spreadsheet(date))
         fields.update(self.collect_leyning_fields(date))
