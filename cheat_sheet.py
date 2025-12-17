@@ -576,7 +576,7 @@ class CheatSheetBuilder:
                     if upcoming_date == tomorrow:
                         assert weekday == 6
                         special["machar chodesh"] = True
-        if rosh_chodesh_days:
+        if rosh_chodesh_days and day != 30:
             if month == "Adar I":
                 month = "Adar Rishon"
             if month == "Adar II":
