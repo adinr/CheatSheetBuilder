@@ -418,6 +418,13 @@ class CheatSheetBuilder:
             fields["maftir_hanukkah_day"] = self.ORDINALS[special["hanukkah"]]
         return fields
 
+    def collect_rosh_chodesh_fields(self, special):
+        fields = {}
+        ulchaparat_pasha_instruction = "including" if special["ulchaparat pasha"] else "omitting"
+        fields["ulchaparat_pasha_instruction_note"] = ulchaparat_pasha_instruction
+        fields["ulchaparat_pasha_instruction"] = ulchaparat_pasha_instruction
+        return fields
+
     def collect_omer_field(self, special):
         fields = {}
         if special["omer"]:
@@ -484,6 +491,7 @@ class CheatSheetBuilder:
         fields.update(self.collect_standing_aliyah_leyner_field(special, fields["torah_multiline"]))
         fields.update(self.collect_special_haftarah_field(special))
         fields.update(self.collect_hanukkah_fields(special))
+        fields.update(self.collect_rosh_chodesh_fields(special))
         fields.update(self.collect_omer_field(special))
         fields.update(self.collect_birkat_hachodesh_fields(special))
         fields.update(self.collect_notes_field(special))
@@ -601,6 +609,7 @@ class CheatSheetBuilder:
                 if res["hy"] % 19 in [0, 3, 6, 8, 11, 14, 17] and month in ["Cheshvan", "Kislev", "Tevet", "Sh'vat", "Sh’vat", "Adar I", "Adar II"]:
                     special["ulchaparat pasha"] = True
                 special["omit av harchamim"] = True
+                self.FIELDS += ["ulchaparat_pasha_instruction", "ulchaparat_pasha_instruction_note"]
 
             # Handle Omer
             if "Omer" in event:
@@ -824,8 +833,6 @@ def main():
     logger.debug(special)
     builder.delete_section(document_id, "OMER", not special["omer"])
     builder.delete_section(document_id, "PSALM_27", not special["psalm 27"])
-    builder.delete_section(document_id, "ULCHAPARAT_PASHA_NOTE", not special["ulchaparat pasha"])
-    builder.delete_section(document_id, "ULCHAPARAT_PASHA", not special["ulchaparat pasha"])
     builder.delete_section(document_id, "BIRKAT_HACHODESH", not special["mevarchim"])
     builder.delete_section(document_id, "LAST_PARASHA", not special["last parasha"])
     builder.delete_section(document_id, "SHIRAT_HAYAM", not special["shabbat shira"])
