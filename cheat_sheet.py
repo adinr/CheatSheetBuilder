@@ -276,6 +276,7 @@ class CheatSheetBuilder:
         fields["thank_you_musaf"] = fields["musaf"]
         fields["thank_you_teaching"] = fields["dvar_torah"]
         fields["thank_you_greeter"] = fields["greeter"]
+        self.logger.debug(f"collected fields: {fields}")
         return fields
 
     def collect_fields_from_kiddush_spreadsheet(self, date):
