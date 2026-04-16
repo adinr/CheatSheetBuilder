@@ -283,13 +283,14 @@ class CheatSheetBuilder:
             response = self.sheets_service.spreadsheets().values().get(spreadsheetId=self.KIDDUSH_SHEET_ID, range=f"{tab}!A2:F55").execute()
             return [row for row in response["values"] if row and date.strftime("%-m/%-d") in row[0]]
         fields = {}
-        rows = get_kiddush_rows("Upcoming")
+        for tab in ["Upcoming", "Past 2026", "2025"]:
+            rows = get_kiddush_rows(tab)
+            if rows:
+                break
+            self.logger.warning(f"could not find date {date.strftime('%-m/%-d')} in kiddush spreadsheet tab {tab}")
         if not rows:
-            self.logger.warning(f"could not find date {date.strftime('%-m/%-d')} in kiddush spreadsheet, trying tab of past kiddushes")
-            rows = get_kiddush_rows("Past")
-            if not rows:
-                self.logger.warning(f"could not find date {date.strftime('%-m/%-d')} in kiddush spreadsheet")
-                return fields
+            self.logger.warning(f"could not find date {date.strftime('%-m/%-d')} in kiddush spreadsheet")
+            return fields
         row = rows[0][:6]
         row += ["" for _ in range(6 - len(row))]  # pad row to contain 6 cells
         fields["kiddush_volunteer"] = row[5]
