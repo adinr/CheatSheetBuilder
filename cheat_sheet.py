@@ -236,7 +236,7 @@ class CheatSheetBuilder:
 
     def collect_fields_from_calendar(self, date):
         fields = {}
-        response = self.sheets_service.spreadsheets().values().get(spreadsheetId=self.CALENDAR_SHEET_ID, range=f"Calendar!A2:L55").execute()
+        response = self.sheets_service.spreadsheets().values().get(spreadsheetId=self.CALENDAR_SHEET_ID, range=f"Calendar!A2:L120").execute()
         rows = [row for row in response["values"] if row[0] == date.strftime("%-m/%-d/%Y")]
         assert len(rows) == 1, "Could not find this Shabbat's row in davening calendar (or more than one row?)"
         row = rows[0][:12]
