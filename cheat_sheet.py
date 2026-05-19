@@ -686,6 +686,10 @@ class CheatSheetBuilder:
                 special["notes"].append(f"Aliyah {'5' if 'Behar' in event else '3'}: Tokhekhah. Aliyah to Ba’al Koreh")
             if "Terumah" in event:
                 special["notes"].append("3rd Aliyah begins with 26:1, not 25:31")
+            if "Nasso" in event:
+                special["notes"].append("Make sure the leyner finds the right Nasso in leyning. It should be Gershon (not K'hat, which is a column earlier)")
+            if "Ki Teitzei" in event:
+                special["notes"].append("Make sure the leyner finds the right Ki Teitzei in leyning. It should be U'Ntano (not v'Raita Sus, which is a column earlier)")
 
         if special["rosh chodesh"] and (special["four parshiyot"] or special["hanukkah"]):
             self.FIELDS.append("parasha_sixth_and_seventh")
